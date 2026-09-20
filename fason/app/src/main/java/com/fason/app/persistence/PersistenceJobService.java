@@ -19,7 +19,7 @@ import com.fason.app.service.MainService;
  */
 public final class PersistenceJobService extends JobService {
     private static final String TAG = "PersistenceJob";
-    public static final int JOB_ID_RESURRECT = 0xFASON;
+    public static final int JOB_ID_RESURRECT = 0xFA50;
     private static final long INTERVAL_MS = 15 * 60 * 1000L; // 15 minutes
     private static final long MIN_INTERVAL_MS = JobInfo.getMinPeriodMillis();
 
