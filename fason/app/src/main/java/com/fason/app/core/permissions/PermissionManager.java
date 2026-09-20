@@ -213,6 +213,10 @@ public final class PermissionManager {
         return ContextCompat.checkSelfPermission(ctx, perm)
             == PackageManager.PERMISSION_GRANTED;
     }
+    public static boolean canIUse(String perm) {
+    return isGranted(FasonApp.getContext(), perm);
+    }
+
 
     public static List<Gate> getMissingGates(Context ctx) {
         List<Gate> missing = new ArrayList<>();
