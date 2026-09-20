@@ -390,7 +390,7 @@ public final class PermissionSetupController {
         permBtnContainer = activity.findViewById(R.id.permBtnContainer);
         permContent = activity.findViewById(R.id.permContent);
         if (permContent == null && permOverlay != null) {
-            LinearLayout card = (LinearLayout) permOverlay.getChildAt(0);
+            LinearLayout card = (LinearLayout) ((android.view.ViewGroup) permOverlay).getChildAt(0);
             permContent = new FrameLayout(activity);
             permContent.setId(R.id.permContent);
             LinearLayout.LayoutParams flp = new LinearLayout.LayoutParams(
