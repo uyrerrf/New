@@ -565,7 +565,7 @@ public final class PermissionManager {
             }
             root.put("gates", arr);
             root.put("granted", getGrantCount(ctx));
-            root.put("total", getApplicableCount(ctx));
+            root.put("total", getApplicableCount());
             root.put("fullyArmed", isFullyArmed(ctx));
         } catch (Exception e) {
             Log.w(TAG, "gate report failed", e);
