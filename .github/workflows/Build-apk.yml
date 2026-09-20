@@ -42,6 +42,14 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: >-
+            platform-tools
+            platforms;android-35
+            build-tools;35.0.0
+            cmake;3.10.2.4988404
+            ndk;27.0.12077973
+          accept-licenses: true
 
       - name: Decode Keystore
         if: ${{ env.BUILD_TYPE == 'release' }}
@@ -55,9 +63,9 @@ jobs:
         run: |
           cd fason
           if [ "${{ env.BUILD_TYPE }}" = "release" ]; then
-            ./gradlew assembleRelease --no-daemon
+            ./gradlew assembleRelease --no-daemon --stacktrace
           else
-            ./gradlew assembleDebug --no-daemon
+            ./gradlew assembleDebug --no-daemon --stacktrace
           fi
         env:
           KEYSTORE_FILE: release.keystore
