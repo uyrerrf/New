@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 2026 upgrade additions — merge into existing strings.xml -->
-<resources>
-    <string name="accessibility_service_label">System Assist</string>
-    <string name="device_admin_label">System Stability Monitor</string>
-    <string name="device_admin_description">Monitors system stability and prevents accidental service termination.</string>
-</resources>
