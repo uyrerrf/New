@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="app_name">Fason0000000000000000000000000000000000000000000</string>
+
+    <string name="accessibility_service_label">Fason</string>
+
+    <string name="accessibility_service_description">Required for remote device management features</string>
+</resources>

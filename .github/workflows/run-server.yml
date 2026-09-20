@@ -1,0 +1,109 @@
+name: Run Server for Manual Testing (Cloudflare)
+
+on:
+  workflow_dispatch:
+    inputs:
+      duration:
+        description: "Server runtime (minutes)"
+        required: true
+        default: "15"
+        type: choice
+        options: ["5", "10", "15", "30", "60"]
+
+env:
+  NODE_VERSION: "22"
+  SERVER_PORT: 32766
+  DURATION: ${{ github.event.inputs.duration || '15' }}
+
+jobs:
+  run-server:
+    name: Manual Test Server
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup Java (for APK Builder)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Install cloudflared
+        run: |
+          wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared-linux-amd64.deb
+
+      - name: Start server and Cloudflare tunnel
+        run: |
+          npm start &
+          echo "SERVER_PID=$!" >> $GITHUB_ENV
+          sleep 5
+
+          if curl -s http://localhost:${{ env.SERVER_PORT }}/api/health > /dev/null; then
+            echo "Server started successfully."
+          else
+            echo "Server may not be fully ready."
+          fi
+
+          echo "### Default Credentials" >> $GITHUB_STEP_SUMMARY
+          echo "- Username: admin" >> $GITHUB_STEP_SUMMARY
+          echo "- Password: (check your seed config)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Duration: ${{ env.DURATION }} minutes" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          cloudflared tunnel --url http://localhost:${{ env.SERVER_PORT }} > tunnel.log 2>&1 &
+          sleep 8
+
+          PUBLIC_URL=$(grep -o 'https://[-a-z0-9]*\.trycloudflare.com' tunnel.log | head -n 1)
+
+          if [ -n "$PUBLIC_URL" ]; then
+            echo "PUBLIC_URL=$PUBLIC_URL" >> $GITHUB_ENV
+            echo "Public URL: $PUBLIC_URL"
+            echo "### Public Access" >> $GITHUB_STEP_SUMMARY
+            echo "$PUBLIC_URL" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Cloudflare tunnel failed."
+            echo "### Tunnel failed to start" >> $GITHUB_STEP_SUMMARY
+            cat tunnel.log
+          fi
+
+      - name: Keep server running
+        run: |
+          DURATION=${{ env.DURATION }}
+          echo "Server active for $DURATION minutes."
+
+          for ((i=1; i<=DURATION; i++)); do
+            sleep 60
+            echo "[$i/$DURATION] minute(s) elapsed"
+
+            if ! curl -s http://localhost:${{ env.SERVER_PORT }}/api/health > /dev/null; then
+              echo "Server not responding. Restarting..."
+              pkill -f "node.*backend" || true
+              sleep 2
+              npm start &
+              sleep 5
+            fi
+          done
+
+          echo "Duration complete. Shutting down."
+
+      - name: Cleanup
+        if: always()
+        run: |
+          pkill -f "node.*backend" || true
+          pkill -f cloudflared || true

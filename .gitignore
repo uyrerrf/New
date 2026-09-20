@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+backend/dist/
+frontend/dist/
+fason/build/
+fason/app/build/
+fason/.gradle/
+fason/local.properties
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Data directories
+backend/data/
+backend/drizzle/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

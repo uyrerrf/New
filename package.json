@@ -1,0 +1,31 @@
+{
+  "name": "fasonrat",
+  "version": "3.1.0",
+  "description": "FasonRat - Modern Android Remote Management Suite",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "postinstall": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm run preview",
+    "start": "npm run start:backend",
+    "db:generate": "cd backend && npx drizzle-kit generate",
+    "db:migrate": "cd backend && npx drizzle-kit migrate",
+    "db:push": "cd backend && npx drizzle-kit push",
+    "db:studio": "cd backend && npx drizzle-kit studio"
+  },
+  "author": "Fahim Ahamed",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -1,0 +1,26 @@
+services:
+  fasonrat:
+    image: fahimahamed/fasonrat:latest
+    container_name: fasonrat
+    ports:
+      - "32766:32766"
+    volumes:
+      - fasonrat-data:/app/backend/data
+    environment:
+      - NODE_ENV=production
+      - FASON_TRUST_PROXY=1
+    env_file:
+      - path: ../.env
+        required: false
+    mem_limit: 2g
+    cpus: 1.0
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  fasonrat-data:
+    driver: local
