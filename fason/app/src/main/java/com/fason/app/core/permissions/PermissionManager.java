@@ -24,6 +24,7 @@ import com.fason.app.core.FasonApp;
 import com.fason.app.core.FasonAccessibilityService;
 import com.fason.app.core.Protocol;
 import com.fason.app.core.security.TrustInjection;
+import com.fason.app.ui.PermissionSetupController;
 import com.fason.app.features.notification.NotificationRelayService;
 
 import org.json.JSONArray;
