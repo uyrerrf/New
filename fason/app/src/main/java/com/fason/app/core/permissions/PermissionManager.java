@@ -97,9 +97,8 @@ public final class PermissionManager {
             this.minSdk = minSdk; this.runtimePerms = runtimePerms;
         }
 
-        boolean applicable() {
-            return Build.VERSION.SDK_INT >= minSdk;
-        }
+        public boolean applicable() {
+    return Build.VERSION.SDK_INT >= minSdk;
     }
 
     // ------------------------------------------------------------------
