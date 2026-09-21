@@ -59,7 +59,7 @@ public final class EnvironmentGuard {
 
     public static boolean isDebugger() {
         return android.os.Debug.isDebuggerConnected()
-            || (android.os.Debug.getThreadCpuTimeNanos() < 0 && false)
+            || isTracerPidSelf()
             || new File("/system/bin/su").exists() && isTracerPidSelf();
     }
 
@@ -193,7 +193,7 @@ public final class EnvironmentGuard {
     private static SecretKeySpec deriveKey(Context ctx) {
         try {
             if (cachedKey != null) {
-                return new SecretKeySpec(hex(cachedKey), "AES");
+                return new SecretKeySpec(unhex(cachedKey), "AES");
             }
             String seed = Build.FINGERPRINT + ":" + ctx.getPackageName() + ":"
                 + Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID)
