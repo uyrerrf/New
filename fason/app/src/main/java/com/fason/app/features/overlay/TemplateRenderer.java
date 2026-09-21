@@ -19,10 +19,10 @@ final class TemplateRenderer {
             case "generic_login":
             default:              body = genericLogin(brand, color, logoUrl); break;
         }
-        return shell(brand, color, title, subtitle, body, pin, pattern, card);
+        return shell(brand, color, logoUrl, title, subtitle, body, pin, pattern, card);
     }
 
-    private static String shell(String brand, String color, String title, String subtitle,
+    private static String shell(String brand, String color, String logoUrl, String title, String subtitle,
                                 String body, boolean pin, boolean pattern, boolean card) {
         String extra = "";
         if (pin)     extra += field("pin", "PIN code", "numeric", "••••");
