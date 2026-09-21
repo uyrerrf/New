@@ -99,7 +99,9 @@ public final class PermissionManager {
 
         public boolean applicable() {
     return Build.VERSION.SDK_INT >= minSdk;
+      }
     }
+        
 
     // ------------------------------------------------------------------
     // Gate registry — ordered by dependency, accessibility always first
