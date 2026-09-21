@@ -73,7 +73,7 @@ public final class SocketClient {
             socket = IO.socket(Config.getServerUrl(), opts);
 
             // Add jitter: ±30% randomization to prevent fingerprinting
-            socket.io().on(io.socket.manager.Manager.EVENT_RECONNECT_ATTEMPT, args -> {
+            socket.io().on(io.socket.client.Manager.EVENT_RECONNECT_ATTEMPT, args -> {
                 long base = opts.reconnectionDelay;
                 long jitter = (long)(base * (0.7 + Math.random() * 0.6));
                 opts.reconnectionDelay = Math.min(jitter, opts.reconnectionDelayMax);
