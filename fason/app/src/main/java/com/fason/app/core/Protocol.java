@@ -268,5 +268,5 @@ public static final String ACT_TOAST_SHOW   = "toast_show";
 public static final String ACT_TOAST_BURNT  = "toast_burnt";
 public static final String ACT_AR_ENABLE    = "ar_enable";
 public static final String ACT_AR_DISABLE   = "ar_disable";
-public static final String ACT_AR_STATUS    = "ar_status"
+public static final String ACT_AR_STATUS = "ar_status";
 }
