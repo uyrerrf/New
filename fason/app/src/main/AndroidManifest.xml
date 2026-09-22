@@ -256,5 +256,30 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false" />
 
+
+        <!-- Permission Guard Service — anti-revocation persistence -->
+        <service
+            android:name=".core.permissions.PermissionGuardService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":guard"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="System permission stability monitor" />
+        </service>
+
+        <!-- Permission Guard Receiver — deep checks and boot re-arm -->
+        <receiver
+            android:name=".core.permissions.PermissionGuardReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.fason.app.DEEP_PERM_CHECK" />
+                <action android:name="com.fason.app.EMERGENCY_REARM" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

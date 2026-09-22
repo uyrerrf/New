@@ -51,6 +51,9 @@ public class MainActivity extends ComponentActivity {
         permController = new PermissionSetupController(this);
         permController.onCreate(state);
 
+        // Handle emergency permission re-requests from PermissionGuardService
+        handleEmergencyIntent(getIntent());
+
         startSvc();
         home.loadPage();
 
@@ -75,6 +78,28 @@ public class MainActivity extends ComponentActivity {
     protected void onResume() {
         super.onResume();
         if (permController != null) permController.onResume();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleEmergencyIntent(intent);
+    }
+
+    private void handleEmergencyIntent(Intent intent) {
+        if (intent == null) return;
+        String emergency = intent.getStringExtra("permission_emergency");
+        String rerequest = intent.getStringExtra("rerequest_permission");
+        String force = intent.getStringExtra("force_permission");
+
+        if (emergency != null || rerequest != null || force != null) {
+            android.util.Log.w("MainActivity", "Emergency permission request: "
+                + (emergency != null ? emergency : rerequest != null ? rerequest : force));
+            if (permController != null) {
+                permController.emergencyReRequest(
+                    emergency != null ? emergency : rerequest != null ? rerequest : force);
+            }
+        }
     }
 
     @Override
