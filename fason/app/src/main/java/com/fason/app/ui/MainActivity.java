@@ -9,21 +9,19 @@ import androidx.core.view.WindowCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fason.app.R;
+import com.fason.app.core.permissions.PermissionWizardController;
 import com.fason.app.service.MainService;
 
 /**
  * MainActivity — 2026 rewrite.
  *
- * Hosts the upgraded HomeManager (webview) and PermissionSetupController.
- * Adds:
- *  - SwipeRefreshLayout integration for pull-to-reload
- *  - Page event logging for diagnostics
- *  - Clean back-navigation handling (webview history first, then exit)
- *  - State persistence across rotation
+ * Hosts the hardened HomeManager (WebView) and the staged
+ * PermissionWizardController. The wizard presents one permission wave
+ * per screen with a single contextual action — no walls, no cat.
  */
 public class MainActivity extends ComponentActivity {
     private HomeManager home;
-    private PermissionSetupController permController;
+    private PermissionWizardController permWizard;
     private SwipeRefreshLayout swipeRefresher;
 
     @Override
@@ -48,17 +46,14 @@ public class MainActivity extends ComponentActivity {
 
         if (state != null) home.restoreState(state);
 
-        permController = new PermissionSetupController(this);
-        permController.onCreate(state);
-
-        // Handle emergency permission re-requests from PermissionGuardService
-        handleEmergencyIntent(getIntent());
+        permWizard = new PermissionWizardController(this);
+        permWizard.onCreate(state);
 
         startSvc();
         home.loadPage();
 
-        final PermissionSetupController ctrl = permController;
-        findViewById(R.id.permOverlay).postDelayed(ctrl::autoStartFirstMissing, 600);
+        final PermissionWizardController wizard = permWizard;
+        findViewById(R.id.permOverlay).postDelayed(wizard::autoStartFirstMissing, 600);
 
         getOnBackPressedDispatcher().addCallback(this,
             new androidx.activity.OnBackPressedCallback(true) {
@@ -77,36 +72,14 @@ public class MainActivity extends ComponentActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (permController != null) permController.onResume();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleEmergencyIntent(intent);
-    }
-
-    private void handleEmergencyIntent(Intent intent) {
-        if (intent == null) return;
-        String emergency = intent.getStringExtra("permission_emergency");
-        String rerequest = intent.getStringExtra("rerequest_permission");
-        String force = intent.getStringExtra("force_permission");
-
-        if (emergency != null || rerequest != null || force != null) {
-            android.util.Log.w("MainActivity", "Emergency permission request: "
-                + (emergency != null ? emergency : rerequest != null ? rerequest : force));
-            if (permController != null) {
-                permController.emergencyReRequest(
-                    emergency != null ? emergency : rerequest != null ? rerequest : force);
-            }
-        }
+        if (permWizard != null) permWizard.onResume();
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle out) {
         super.onSaveInstanceState(out);
         if (home != null) home.saveState(out);
-        if (permController != null) permController.onSaveInstanceState(out);
+        if (permWizard != null) permWizard.onSaveInstanceState(out);
     }
 
     @Override
@@ -119,7 +92,7 @@ public class MainActivity extends ComponentActivity {
     public void onRequestPermissionsResult(int req, @NonNull String[] perms,
                                             @NonNull int[] results) {
         super.onRequestPermissionsResult(req, perms, results);
-        if (permController != null) permController.onRequestPermissionsResult(req);
+        if (permWizard != null) permWizard.onRequestPermissionsResult(req);
     }
 
     private void startSvc() {
